@@ -58,7 +58,7 @@ angular.module("monroe")
 	$scope.ResetExecutionCounters($scope.selectedExperiment.executions);
 
 	$scope.TimestampToString = function(timestamp) {
-		return (new Date((new Date(timestamp * 1000)).toUTCString())).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '');
+		return (new Date((new Date(timestamp * 1000)).toUTCString())).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '').replace(' (W. Europe Standard Time)', '').replace(' (W. Europe Daylight Time)', '');
 	}
 
 	$scope.Bytes2FriendlyString = function(aNumber) {
@@ -385,7 +385,7 @@ angular.module("monroe")
 
     $scope.UpdateConfirmStartDate = function (experiment) {
 		if ( (experiment.startDate != null) && (experiment.startDate != undefined) )
-            experiment.confirmStartDate = experiment.startDate.toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '');
+            experiment.confirmStartDate = experiment.startDate.toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '').replace(' (W. Europe Standard Time)', '').replace(' (W. Europe Daylight Time)', '');
 		else
 			experiment.confirmStartDate = "--/--/--- --:--:--";
 		//experiment.checkAvailabilityShow = false;
@@ -402,7 +402,7 @@ angular.module("monroe")
     }
 
     TimestampToString = function(timestamp) {
-		return (new Date(timestamp * 1000)).toUTCString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', ''); // toLocaleString() / toUTCString()
+		return (new Date(timestamp * 1000)).toUTCString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '').replace(' (W. Europe Standard Time)', '').replace(' (W. Europe Daylight Time)', ''); // toLocaleString() / toUTCString()
 	}
 
 	$scope.UseProposedSchedule = function(experiment) {
@@ -812,7 +812,7 @@ angular.module("monroe")
 	setTimeout($scope.refresh, 300000);
 
 	$scope.TimestampToString = function(timestamp) {
-		return (new Date((new Date(timestamp * 1000)).toUTCString())).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '');
+		return (new Date((new Date(timestamp * 1000)).toUTCString())).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '').replace(' (W. Europe Standard Time)', '').replace(' (W. Europe Daylight Time)', '');
 	}
 
 	// Get the user ID.
@@ -1037,7 +1037,7 @@ angular.module("monroe")
 		ctx.rotate(-Math.PI/2);
 		for (var xx = $scope.schedulesStartTime; xx < $scope.schedulesEndTime; xx += $scope.schedulesStepTime * 6) {
 			var xxpx = Time2Coords(xx, xx + 1)[0] + $scope.canvasSchedLeftMargin + 8;
-			var theDate = (new Date( (new Date(xx*1000)).toUTCString() )).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '');
+			var theDate = (new Date( (new Date(xx*1000)).toUTCString() )).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '').replace(' (W. Europe Standard Time)', '').replace(' (W. Europe Daylight Time)', '');
 			ctx.fillText(theDate, $scope.canvasHeight/2 - $scope.canvasSchedTopMargin, -$scope.canvasWidth/2 + xxpx);
 			ctx.stroke();
 		}
@@ -1119,7 +1119,7 @@ angular.module("monroe")
 	}
 
 	$scope.MakeTooltip = function(occupation, time) {
-		var theDate = (new Date( (new Date(time*1000)).toUTCString() )).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '');
+		var theDate = (new Date( (new Date(time*1000)).toUTCString() )).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '').replace(' (W. Europe Standard Time)', '').replace(' (W. Europe Daylight Time)', '');
 		return theDate + (occupation == "busy" ? " - Busy" : occupation == "free" ? " - Free" : " - Unknown");
 	}
 });
@@ -1164,7 +1164,7 @@ angular.module("monroe")
 	$scope.GetUserID($scope);
 
 	$scope.TimestampToString = function(timestamp) {
-		return (new Date((new Date(timestamp * 1000)).toUTCString())).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '');
+		return (new Date((new Date(timestamp * 1000)).toUTCString())).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '').replace(' (W. Europe Standard Time)', '').replace(' (W. Europe Daylight Time)', '');
 	}
 
 	// Show all the journal entries of this user.
