@@ -307,6 +307,7 @@ angular.module("monroe")
     $scope.experiment.showSuccessPanel = false;
     $scope.experiment.showFailurePanel = false;
 	$scope.experiment.recurrence = false;
+	$scope.experiment.lpq = false;
 	$scope.experiment.requiresSSH = false;
 	$scope.experiment.sshPublicKey = new String;
 	$scope.experiment.rescheduleID = $location.search()["retrieveID"];
@@ -317,7 +318,10 @@ angular.module("monroe")
 	$scope.experiment.disableNodeFilters = false;
 	$scope.experiment.templateReadmeURL = "";
 	$scope.experiment.showTemplateReadme = false;
-
+	startDateLabels = [];
+	startDateLabels.push("Select starting date and time:");
+	startDateLabels.push("");
+	$scope.experiment.startDateLabel = startDateLabels[0];
 
 	ResetNodeFilters = function() {
 		$scope.experiment.projectFilter = [];
@@ -359,6 +363,16 @@ angular.module("monroe")
 		experiment.startDate = new Date( (new Date()).toUTCString() );
 		experiment.startASAP = false;
 		$scope.UpdateConfirmStartDate(experiment);
+	}
+	
+	$scope.checkLpq = function(experiment) {
+		console.log("LPQ: ");
+		console.log(experiment.lpq);
+		experiment.lpq = !experiment.lpq;
+		if (!experiment.lpq)
+			experiment.startDateLabel = startDateLabels[0];
+		else
+			experiment.startDateLabel = startDateLabels[1];
 	}
 
     PrepareNodeFilters = function(experiment, request) {
@@ -473,7 +487,7 @@ angular.module("monroe")
 
 		ResetWarningPanels();
 
-    	if (experiment.recurrence) {
+    	if (!experiment.lpq && experiment.recurrence) {
     		anumber = Number(experiment.period);
     		res = res && isFinite(anumber) && (anumber >= 3600);
     		if (!res)
@@ -506,7 +520,7 @@ angular.module("monroe")
 				$scope.showWarningActiveQuota = true;
 		}
 
-		if (res && experiment.requiresSSH && !experiment.disableNodeFilters) {
+		if (res && !experiment.lpq && experiment.requiresSSH && !experiment.disableNodeFilters) {
 			res = (experiment.nodeType == "type:testing");
 			if (!res)
 				$scope.showWarningSSHOnlyTesting = true;
@@ -557,7 +571,10 @@ angular.module("monroe")
     	request.script = experiment.script;
     	anumber = Number(experiment.nodeCount);
     	if (isFinite(anumber))    request.nodecount = anumber;
-		if (experiment.startASAP) {
+		if (experiment.lpq) {
+			request.start = -1;
+		}
+		else if (experiment.startASAP) {
 			request.start = 0;
 		}
 		else {
@@ -565,13 +582,15 @@ angular.module("monroe")
     	    if (isFinite(anumber))    request.start = anumber;
 		}
     	anumber = Number(experiment.duration);
-    	if (isFinite(anumber) && ('start' in request))    request.stop = request.start + anumber;
-
-    	/*request.interfaces = "";
-    	if ($scope.experiment.useInterface1)    request.interfaces += "iface1";
-    	if (experiment.useInterface2)    request.interfaces += (request.interfaces == "") ? "iface2" : ",iface2";
-    	if (experiment.useInterface3)    request.interfaces += (request.interfaces == "") ? "iface3" : ",iface3";
-    	if (request.interfaces == "")            delete request.interfaces;*/
+    	if (isFinite(anumber)) {
+			if (experiment.lpq) {
+				request.stop = anumber;
+			}
+			else {
+				if ('start' in request)
+					request.stop = request.start + anumber;
+			}
+		}
 
 		PrepareNodeFilters(experiment, request);
 
@@ -587,7 +606,7 @@ angular.module("monroe")
 
     	request.options["shared"] = 0;
 
-    	if (experiment.recurrence)
+    	if ( !experiment.lpq && experiment.recurrence)
     	{
     	    request.options["recurrence"] = 'simple';
     	    anumber = Number(experiment.period);
@@ -604,7 +623,7 @@ angular.module("monroe")
     	//request.deployment_options["restart"] = 1;
 
 		// SSH options.
-		if ($scope.experiment.requiresSSH) {
+		if (!experiment.lpq && $scope.experiment.requiresSSH) {
 			request.options["ssh"] = {};
 			request.options.ssh["server"] = sshServerURL;
 			request.options.ssh["server.port"] = 29999;
@@ -665,6 +684,7 @@ angular.module("monroe")
 				if (data.name)	$scope.experiment.name = data.name;
 				if (data.script)	$scope.experiment.script = data.script;
 				if (data.nodecount)	$scope.experiment.nodeCount = data.nodecount;
+				$scope.experiment.lpq = false;
 				if (data.start)	{
 					$scope.experiment.startDate = new Date( (new Date(data.start * 1000)).toUTCString() );
 					$scope.UpdateConfirmStartDate($scope.experiment);
