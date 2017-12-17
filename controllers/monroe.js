@@ -318,10 +318,6 @@ angular.module("monroe")
 	$scope.experiment.disableNodeFilters = false;
 	$scope.experiment.templateReadmeURL = "";
 	$scope.experiment.showTemplateReadme = false;
-	startDateLabels = [];
-	startDateLabels.push("Select starting date and time:");
-	startDateLabels.push("");
-	$scope.experiment.startDateLabel = startDateLabels[0];
 
 	ResetNodeFilters = function() {
 		$scope.experiment.projectFilter = [];
@@ -366,13 +362,16 @@ angular.module("monroe")
 	}
 	
 	$scope.checkLpq = function(experiment) {
-		console.log("LPQ: ");
-		console.log(experiment.lpq);
-		experiment.lpq = !experiment.lpq;
-		if (!experiment.lpq)
-			experiment.startDateLabel = startDateLabels[0];
-		else
-			experiment.startDateLabel = startDateLabels[1];
+		if (experiment.lpq) {
+			var tempDate = new Date();
+			tempDate.setDate(tempDate.getDate() + 1);
+			experiment.startDate = new Date( tempDate.toUTCString() );
+			experiment.startASAP = false;
+			$scope.UpdateConfirmStartDate(experiment);
+		}
+		else {
+			$scope.SetStartDateToNow(experiment);
+		}
 	}
 
     PrepareNodeFilters = function(experiment, request) {
@@ -567,35 +566,38 @@ angular.module("monroe")
     	var request = new Object;
         var anumber;
 
+		request.options = {};
     	request.name = experiment.name;
     	request.script = experiment.script;
     	anumber = Number(experiment.nodeCount);
     	if (isFinite(anumber))    request.nodecount = anumber;
-		if (experiment.lpq) {
-			request.start = -1;
-		}
-		else if (experiment.startASAP) {
-			request.start = 0;
-		}
-		else {
-    	    anumber = Number(experiment.startDate) / 1000|0;
-    	    if (isFinite(anumber))    request.start = anumber;
-		}
-    	anumber = Number(experiment.duration);
-    	if (isFinite(anumber)) {
-			if (experiment.lpq) {
-				request.stop = anumber;
+		
+		if (!experiment.lpq) {
+			if (experiment.startASAP) {
+				request.start = 0;
 			}
 			else {
-				if ('start' in request)
-					request.stop = request.start + anumber;
+				anumber = Number(experiment.startDate) / 1000|0;
+				if (isFinite(anumber))    request.start = anumber;
 			}
+		
+			anumber = Number(experiment.duration);
+			if (isFinite(anumber) && ('start' in request))
+				request.stop = request.start + anumber;
+			else
+				request.stop = 0;
 		}
-
+		else { // LPQ scheduling. Define until/duration instead of start/stop. We reuse UI fields.
+			request.start = -1;
+			anumber = Number(experiment.startDate) / 1000|0;
+			if (isFinite(anumber))		request.options["until"] = anumber;
+			anumber = Number(experiment.duration);
+			if (isFinite(anumber))		request.duration = anumber;
+		}
+		
 		PrepareNodeFilters(experiment, request);
 
 		//// Options
-    	request.options = {};
     	anumber = Number(experiment.activeQuota);
     	if (isFinite(anumber))
     	    request.options["traffic"] = anumber * 1024*1024;

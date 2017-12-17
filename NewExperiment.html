@@ -240,7 +240,7 @@
     </div>
     <div class="panel-body">
 		<div class="row">
-			<label class="col-md-2"><input type="checkbox" ng-model="experiment.lpq"> Low priority</label>
+			<label class="col-md-2"><input type="checkbox" ng-model="experiment.lpq" ng-change="checkLpq(experiment)";> First availability</label>
         </div>
         <div class="row" ng-hide="experiment.lpq">
             <label class="col-md-2"><input type="checkbox" ng-model="experiment.recurrence"> Recurrence</label>
@@ -267,7 +267,7 @@
 			<span class="control-label col-md-6" style="text-align:left">{{experiment.confirmStartDate}}</span>
 		</div>
 		<div class="row" ng-hide="experiment.lpq">
-		    <label class="col-md-3"><input type="checkbox" ng-model="experiment.startASAP" ng-change="SetStartDateASAP(experiment);"> As soon as possible</label>
+		    <label class="col-md-3"><input type="checkbox" ng-model="experiment.startASAP"> As soon as possible</label>
 		</div>
 
 		<span class="help-block" ng-hide="experiment.lpq">
@@ -282,12 +282,13 @@
 		</span>
 		<span class="help-block" ng-hide="!experiment.lpq">
 		    <dl>
-			    <dt><span style="color:blue" class="glyphicon glyphicon-info-sign"></span> Tips for low-priority scheduling:</dt>
-				<dd style="padding-left:.25cm">- In low-priority scheduling, the number of nodes is the number of distinct nodes.</dd>
+			    <dt><span style="color:blue" class="glyphicon glyphicon-info-sign"></span> Tips for first-availability scheduling:</dt>
+				<dd style="padding-left:.25cm">- In first-availability scheduling, the number of nodes is the number of distinct nodes.</dd>
 				<dd style="padding-left:.25cm">- Execution on each node is asynchronous and thus <b>NOT</b> guaranteed to be simultaneous.</dd>
-				<dd style="padding-left:.25cm">- Experiments may be not executed if the end of the scheduling window is reached without a chance to execute them.</dd>
-				<dd style="padding-left:.25cm">- Tasks in the LP queue will not be deployed 24h in advance on the nodes. Add any long deployment times to the execution slot length.</dd>
-				<dd style="padding-left:.25cm">- The scheduler checks if the LP request has a chance to be fulfilled at all, under the current circumstances.</dd>
+				<dd style="padding-left:.25cm">- Experiments may not be executed if the end of the scheduling window is reached without a chance to execute them.</dd>
+				<dd style="padding-left:.25cm">- Tasks in the first-availability queue will not be deployed 24h on advance to the nodes. Add any long deployment times to the execution slot length.</dd>
+				<dd style="padding-left:.25cm">- The scheduler checks if the first-availability request has a chance to be fulfilled at all, under the current circumstances.</dd>
+				<dd style="padding-left:.25cm">- By defult, the execution window ends 24 hours since the current time.</dd>
 			</dl>
 		</span>
 

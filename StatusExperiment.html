@@ -211,8 +211,10 @@
 											<td class="text-right" style="border-top:none;">{{sched.schedId}}</td>
 											<td class="text-right" style="border-top:none;">{{sched.nodeid}}</td>
 											<td style="border-top:none;">{{Capitalize(sched.status)}}</td>
-											<td style="border-top:none;">{{TimestampToString(sched.start)}}</td>
-											<td style="border-top:none;">{{TimestampToString(sched.stop)}}</td>
+											<td style="border-top:none;" ng-if="sched.start != -1">{{TimestampToString(sched.start)}}</td>
+											<td style="border-top:none;" ng-if="sched.start == -1">Pending...</td>
+											<td style="border-top:none;"  ng-if="sched.start != -1">{{TimestampToString(sched.stop)}}</td>
+											<td style="border-top:none;"  ng-if="sched.start == -1">Pending...</td>
 											<td style="border-top:none;">{{iExperiment.options.shared}}</td>
 											<td style="border-top:none;">{{Bytes2FriendlyString(iExperiment.options["storage"])}}</td>
 											<td style="border-top:none;">{{Bytes2FriendlyString(iExperiment.options["traffic"])}}</td>
