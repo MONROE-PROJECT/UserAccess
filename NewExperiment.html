@@ -283,12 +283,11 @@
 		<span class="help-block" ng-hide="!experiment.lpq">
 		    <dl>
 			    <dt><span style="color:blue" class="glyphicon glyphicon-info-sign"></span> Tips for first-availability scheduling:</dt>
-				<dd style="padding-left:.25cm">- In first-availability scheduling, the number of nodes is the number of distinct nodes.</dd>
 				<dd style="padding-left:.25cm">- Execution on each node is asynchronous and thus <b>NOT</b> guaranteed to be simultaneous.</dd>
 				<dd style="padding-left:.25cm">- Experiments may not be executed if the end of the scheduling window is reached without a chance to execute them.</dd>
-				<dd style="padding-left:.25cm">- Tasks in the first-availability queue will not be deployed 24h on advance to the nodes. Add any long deployment times to the execution slot length.</dd>
+				<dd style="padding-left:.25cm">- Tasks in the first-availability queue are not be deployed on advance to the nodes. Increase the duration of the experiment to include long deployment times</dd>
 				<dd style="padding-left:.25cm">- The scheduler checks if the first-availability request has a chance to be fulfilled at all, under the current circumstances.</dd>
-				<dd style="padding-left:.25cm">- By defult, the execution window ends 24 hours since the current time.</dd>
+				<dd style="padding-left:.25cm">- By default, the execution window ends 24 hours after the current time.</dd>
 			</dl>
 		</span>
 
