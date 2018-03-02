@@ -359,7 +359,7 @@ angular.module("monroe")
 		experiment.startASAP = false;
 		$scope.UpdateConfirmStartDate(experiment);
 	}
-	
+
 	$scope.checkLpq = function(experiment) {
 		if (experiment.lpq) {
 			var tempDate = new Date();
@@ -567,7 +567,7 @@ angular.module("monroe")
     	request.script = experiment.script;
     	anumber = Number(experiment.nodeCount);
     	if (isFinite(anumber))    request.nodecount = anumber;
-		
+
 		if (!experiment.lpq) {
 			if (experiment.startASAP) {
 				request.start = 0;
@@ -576,7 +576,7 @@ angular.module("monroe")
 				anumber = Number(experiment.startDate) / 1000|0;
 				if (isFinite(anumber))    request.start = anumber;
 			}
-		
+
 			anumber = Number(experiment.duration);
 			if (isFinite(anumber) && ('start' in request))
 				request.stop = request.start + anumber;
@@ -590,7 +590,7 @@ angular.module("monroe")
 			anumber = Number(experiment.duration);
 			if (isFinite(anumber))		request.duration = anumber;
 		}
-		
+
 		PrepareNodeFilters(experiment, request);
 
 		//// Options
@@ -767,6 +767,8 @@ angular.module("monroe")
 			experiment.additionalOptions = '"urls":[["facebook.com/telia/","facebook.com/LeoMessi/","facebook.com/Cristiano/","facebook.com/intrepidtravel","facebook.com/threadless","facebook.com/Nutella","facebook.com/zappos","facebook.com/toughmudder","facebook.com/stjude","facebook.com/Adobe/"],["en.wikipedia.org/wiki/Timeline_of_the_far_future","en.wikipedia.org/wiki/As_Slow_as_Possible","en.wikipedia.org/wiki/List_of_political_catchphrases","en.wikipedia.org/wiki/1958_Lituya_Bay_megatsunami","en.wikipedia.org/wiki/Yonaguni_Monument#Interpretations","en.wikipedia.org/wiki/Crypt_of_Civilization","en.wikipedia.org/wiki/Mad_scientist","en.wikipedia.org/wiki/London_Stone","en.wikipedia.org/wiki/Internet","en.wikipedia.org/wiki/Stream_Control_Transmission_Protocol"],["google.com/search?q=Pok%C3%A9mon+Go","google.com/search?q=iPhone+7","google.com/search?q=Brexit","google.com/#q=stockholm,+sweden","google.com/#q=game+of+thrones","google.com/#q=Oslo","google.com/#q=Paris","google.com/#q=Madrid","google.com/#q=Rome","google.com/#q=the+revenant"]]';
 			experiment.templateReadmeURL = "https://github.com/MONROE-PROJECT/Experiments/blob/master/experiments/webworks/readme.md";
 			experiment.showTemplateReadme = true;
+      experiment.activeQuota = 100;
+
 
 		}
 		else if (experiment.template == "nettest") {
@@ -775,6 +777,8 @@ angular.module("monroe")
 			experiment.additionalOptions = '"cnf_server_host":"bulk.se.monroe-system.eu","cnf_server_port":10080,"cnf_dl_duration_s":2,"cnf_ul_duration_s":2';
 			experiment.templateReadmeURL = "https://github.com/MONROE-PROJECT/Experiments/blob/master/experiments/nettest/nettest-client/readme.md";
 			experiment.showTemplateReadme = true;
+      experiment.activeQuota = 100;
+
 		}
 		else {
 			experiment.script = "";
