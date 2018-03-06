@@ -77,7 +77,6 @@
 </div>
 <div class="panel-body">
 
-    <!-- ----------------------------------------->
     <div class="panel panel-info">
     <div class="panel-heading">
         Description
@@ -86,12 +85,12 @@
         <div class="row">
             <label style="text-align:left" class="control-label col-md-1" for="experimentName"><span class="glyphicon glyphicon-asterisk" style="color:crimson"></span> Name:</label>
             <div class="col-md-11"><input type="text" class="form-control" id="experimentName" placeholder="Name of the experiment" ng-model="experiment.name"></div>
-		</div>
+			</div>
 
 
         <div class="row" id="colSep">
             <label style="text-align:left" class="control-label col-md-1" for="script"><span class="glyphicon glyphicon-asterisk" style="color:crimson"></span> Script:</label>
-            <div class="col-md-7"><input type="text" class="form-control" id="script" placeholder="Docker pull URL" ng-model="experiment.script"></div>
+            <div class="col-md-7"><input type="text" class="form-control" id="script" placeholder="Docker URL" ng-model="experiment.script"></div>
             <!-- New Experiments Tab -->
             <label style="text-align:left" class="control-label col-md-1" for="template">Templates:</label>
             <div class="col-md-2">
@@ -233,18 +232,15 @@
         Scheduling options
     </div>
     <div class="panel-body">
-		<div class="row">
-			<label class="col-md-2"><input type="checkbox" ng-model="experiment.lpq" ng-change="checkLpq(experiment)";> First availability</label>
-        </div>
-        <div class="row" ng-hide="experiment.lpq">
+        <div class="row">
             <label class="col-md-2"><input type="checkbox" ng-model="experiment.recurrence"> Recurrence</label>
         </div>
-        <div class="row" id="colSep" ng-hide="!experiment.recurrence || experiment.lpq">
+        <div class="row" id="colSep" ng-hide=!experiment.recurrence>
             <label class="control-label col-md-1" for="period">Every:</label>
             <div class="col-md-2"><input type="number" min="3600" class="form-control" id="period" placeholder="(seconds)" ng-model="experiment.period"></div>
             <label class="control-label col-md-1" style="text-align:left">seconds</label>
         </div>
-		<div class="row" id="colSep" ng-hide="!experiment.recurrence || experiment.lpq">
+		<div class="row" id="colSep" ng-hide=!experiment.recurrence>
             <label class="control-label col-md-1" for="until">Until:</label>
             <div class="col-md-3"><input type="datetime-local" step="1" id="until" ng-model="experiment.repeatUntil" ng-model-options="{timezone:'utc'}" ng-change="UpdateRepeatUntil(experiment);"/><label class="control-label" style="padding-left:.1cm">UTC</label></div>
 			<label class="control-label" style="text-align:left">{{experiment.untilParsed}}</label>
@@ -252,21 +248,20 @@
 
 	    <br>
 	    <div class="row" id="colSep">
-            <label class="col-md-3" ng-hide="experiment.lpq">Select starting date and time:</label>
-			<label class="col-md-3" ng-hide="!experiment.lpq">Select end of execution window:</label>
+            <label class="col-md-3">Select starting date and time:</label>
 		    <label class="col-md-6">Date and time in YOUR local time-zone:</label>
 		</div>
 		<div class="row">
-		    <div class="col-md-3"><input type="datetime-local" step="1" ng-model="experiment.startDate" id="startDate" ng-model-options="{ timezone: 'utc' }" ng-change="UpdateConfirmStartDate(experiment);" ng-disabled="experiment.startASAP" required /><label class="control-label" style="padding-left:.1cm">UTC <button type="submit" class="btn btn-primary btn-xs" ng-click="SetStartDateToNow(experiment)" data-toggle="tooltip" title="Set date to now" ng-hide="experiment.lpq">Now</button></label></div>
+		    <div class="col-md-3"><input type="datetime-local" step="1" ng-model="experiment.startDate" id="startDate" ng-model-options="{ timezone: 'utc' }" ng-change="UpdateConfirmStartDate(experiment);" ng-disabled="experiment.startASAP" required /><label class="control-label" style="padding-left:.1cm">UTC <button type="submit" class="btn btn-primary btn-xs" ng-click="SetStartDateToNow(experiment)" data-toggle="tooltip" title="Set date to now">Now</button></label></div>
 			<span class="control-label col-md-6" style="text-align:left">{{experiment.confirmStartDate}}</span>
 		</div>
-		<div class="row" ng-hide="experiment.lpq">
-		    <label class="col-md-3"><input type="checkbox" ng-model="experiment.startASAP"> As soon as possible</label>
+		<div class="row">
+		    <label class="col-md-3"><input type="checkbox" ng-model="experiment.startASAP" ng-change="SetStartDateASAP(experiment);"> As soon as possible</label>
 		</div>
 
-		<span class="help-block" ng-hide="experiment.lpq">
+		<span class="help-block">
 		    <dl>
-			    <dt><span style="color:blue" class="glyphicon glyphicon-info-sign"></span> Tips for date selection:</dt>
+			    <dt><span style="color:blue" class="glyphicon glyphicon-info-sign"></span> Tips:</dt>
 				<dd style="padding-left:.25cm">- Input a date and press "Check availability" to verify if the schedule is possible <em>at that date</em>,</dd>
 				<dd style="padding-left:.25cm">- or mark "As soon as possible" and press "Check availability" to know the earliest possible starting time.</dd>
 				<dd style="padding-left:.25cm">- Input a valid starting date and leave "As soon as possible" unchecked to submit the experiment.</dd>
@@ -274,18 +269,8 @@
 				<dd style="padding-left:.25cm">- "Checking availavility with a date starts checking <em>after</em> that date.</dd>
 			</dl>
 		</span>
-		<span class="help-block" ng-hide="!experiment.lpq">
-		    <dl>
-			    <dt><span style="color:blue" class="glyphicon glyphicon-info-sign"></span> Tips for first-availability scheduling:</dt>
-				<dd style="padding-left:.25cm">- Execution on each node is asynchronous and thus <b>NOT</b> guaranteed to be simultaneous.</dd>
-				<dd style="padding-left:.25cm">- Experiments may not be executed if the end of the scheduling window is reached without a chance to execute them.</dd>
-				<dd style="padding-left:.25cm">- Tasks in the first-availability queue are not be deployed on advance to the nodes. Increase the duration of the experiment to include long deployment times</dd>
-				<dd style="padding-left:.25cm">- The scheduler checks if the first-availability request has a chance to be fulfilled at all, under the current circumstances.</dd>
-				<dd style="padding-left:.25cm">- By default, the execution window ends 24 hours after the current time.</dd>
-			</dl>
-		</span>
 
-		<div class="row" id="colSep" ng-hide="experiment.lpq">
+		<div class="row" id="colSep">
 		    <div class="col-md-3"><button type="submit" class="btn btn-default" ng-click="checkSchedule(experiment)" ng-hide="experiment.showAvailabilityProgress">Check availability</button>
 			<button type="submit" class="btn btn-default" ng-hide="!experiment.showAvailabilityProgress">Checking availability...</button>
 			<i class="fa fa-spinner fa-spin" ng-if="experiment.showAvailabilityProgress"></i></div>
@@ -296,10 +281,11 @@
 			<span class="col-md-9 col-md-offset-3" style="text-align:left" ng-hide="!experiment.checkAvailabilityShow">{{experiment.checkAvailabilityMaxNodes}}</span>
 			<span class="col-md-9 col-md-offset-3" style="text-align:left" ng-hide="!experiment.checkAvailabilityShow">{{experiment.checkAvailabilitySlotEnd}}</span>
 		</div>
-        <div class="row" style="margin-top:0.5cm" ng-hide="experiment.lpq">
+
+        <div class="row" style="margin-top:0.5cm">
             <label class="col-md-2"><input type="checkbox" ng-model="experiment.requiresSSH"> SSH tunnel</label>
         </div>
-		<div class="row" id="colSep" ng-hide="!experiment.requiresSSH || experiment.lpq">
+		<div class="row" id="colSep" ng-hide="!experiment.requiresSSH">
             <label class="control-label col-md-1" for="period">Public SSH key:</label>
             <div class="col-md-2"><input type="text" class="form-control" id="sshPublicKey" ng-model="experiment.sshPublicKey"></div>
         </div>
