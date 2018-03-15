@@ -58,7 +58,7 @@ angular.module("monroe")
 	$scope.ResetExecutionCounters($scope.selectedExperiment.executions);
 
 	$scope.TimestampToString = function(timestamp) {
-		return (new Date((new Date(timestamp * 1000)).toUTCString())).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '');
+		return (new Date((new Date(timestamp * 1000)).toUTCString())).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '').replace(' (W. Europe Standard Time)', '').replace(' (W. Europe Daylight Time)', '');
 	}
 
 	$scope.Bytes2FriendlyString = function(aNumber) {
@@ -307,6 +307,7 @@ angular.module("monroe")
     $scope.experiment.showSuccessPanel = false;
     $scope.experiment.showFailurePanel = false;
 	$scope.experiment.recurrence = false;
+	$scope.experiment.lpq = false;
 	$scope.experiment.requiresSSH = false;
 	$scope.experiment.sshPublicKey = new String;
 	$scope.experiment.rescheduleID = $location.search()["retrieveID"];
@@ -317,7 +318,6 @@ angular.module("monroe")
 	$scope.experiment.disableNodeFilters = false;
 	$scope.experiment.templateReadmeURL = "";
 	$scope.experiment.showTemplateReadme = false;
-
 
 	ResetNodeFilters = function() {
 		$scope.experiment.projectFilter = [];
@@ -360,6 +360,19 @@ angular.module("monroe")
 		$scope.UpdateConfirmStartDate(experiment);
 	}
 
+	$scope.checkLpq = function(experiment) {
+		if (experiment.lpq) {
+			var tempDate = new Date();
+			tempDate.setDate(tempDate.getDate() + 1);
+			experiment.startDate = new Date( tempDate.toUTCString() );
+			experiment.startASAP = false;
+			$scope.UpdateConfirmStartDate(experiment);
+		}
+		else {
+			$scope.SetStartDateToNow(experiment);
+		}
+	}
+
     PrepareNodeFilters = function(experiment, request) {
 		var excludedProjects = "-project:allbesmart|project:cosmote|project:flex|project:membrane|project:nimbus|project:nor_lab|project:roaming|project:uma,";
 
@@ -381,7 +394,7 @@ angular.module("monroe")
 
     $scope.UpdateConfirmStartDate = function (experiment) {
 		if ( (experiment.startDate != null) && (experiment.startDate != undefined) )
-            experiment.confirmStartDate = experiment.startDate.toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '');
+            experiment.confirmStartDate = experiment.startDate.toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '').replace(' (W. Europe Standard Time)', '').replace(' (W. Europe Daylight Time)', '');
 		else
 			experiment.confirmStartDate = "--/--/--- --:--:--";
 		//experiment.checkAvailabilityShow = false;
@@ -398,7 +411,7 @@ angular.module("monroe")
     }
 
     TimestampToString = function(timestamp) {
-		return (new Date(timestamp * 1000)).toUTCString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', ''); // toLocaleString() / toUTCString()
+		return (new Date(timestamp * 1000)).toUTCString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '').replace(' (W. Europe Standard Time)', '').replace(' (W. Europe Daylight Time)', ''); // toLocaleString() / toUTCString()
 	}
 
 	$scope.UseProposedSchedule = function(experiment) {
@@ -469,7 +482,7 @@ angular.module("monroe")
 
 		ResetWarningPanels();
 
-    	if (experiment.recurrence) {
+    	if (!experiment.lpq && experiment.recurrence) {
     		anumber = Number(experiment.period);
     		res = res && isFinite(anumber) && (anumber >= 3600);
     		if (!res)
@@ -502,7 +515,7 @@ angular.module("monroe")
 				$scope.showWarningActiveQuota = true;
 		}
 
-		if (res && experiment.requiresSSH && !experiment.disableNodeFilters) {
+		if (res && !experiment.lpq && experiment.requiresSSH && !experiment.disableNodeFilters) {
 			res = (experiment.nodeType == "type:testing");
 			if (!res)
 				$scope.showWarningSSHOnlyTesting = true;
@@ -549,30 +562,38 @@ angular.module("monroe")
     	var request = new Object;
         var anumber;
 
+		request.options = {};
     	request.name = experiment.name;
     	request.script = experiment.script;
     	anumber = Number(experiment.nodeCount);
     	if (isFinite(anumber))    request.nodecount = anumber;
-		if (experiment.startASAP) {
-			request.start = 0;
-		}
-		else {
-    	    anumber = Number(experiment.startDate) / 1000|0;
-    	    if (isFinite(anumber))    request.start = anumber;
-		}
-    	anumber = Number(experiment.duration);
-    	if (isFinite(anumber) && ('start' in request))    request.stop = request.start + anumber;
 
-    	/*request.interfaces = "";
-    	if ($scope.experiment.useInterface1)    request.interfaces += "iface1";
-    	if (experiment.useInterface2)    request.interfaces += (request.interfaces == "") ? "iface2" : ",iface2";
-    	if (experiment.useInterface3)    request.interfaces += (request.interfaces == "") ? "iface3" : ",iface3";
-    	if (request.interfaces == "")            delete request.interfaces;*/
+		if (!experiment.lpq) {
+			if (experiment.startASAP) {
+				request.start = 0;
+			}
+			else {
+				anumber = Number(experiment.startDate) / 1000|0;
+				if (isFinite(anumber))    request.start = anumber;
+			}
+
+			anumber = Number(experiment.duration);
+			if (isFinite(anumber) && ('start' in request))
+				request.stop = request.start + anumber;
+			else
+				request.stop = 0;
+		}
+		else { // LPQ scheduling. Define until/duration instead of start/stop. We reuse UI fields.
+			request.start = -1;
+			anumber = Number(experiment.startDate) / 1000|0;
+			if (isFinite(anumber))		request.options["until"] = anumber;
+			anumber = Number(experiment.duration);
+			if (isFinite(anumber))		request.duration = anumber;
+		}
 
 		PrepareNodeFilters(experiment, request);
 
 		//// Options
-    	request.options = {};
     	anumber = Number(experiment.activeQuota);
     	if (isFinite(anumber))
     	    request.options["traffic"] = anumber * 1024*1024;
@@ -583,7 +604,7 @@ angular.module("monroe")
 
     	request.options["shared"] = 0;
 
-    	if (experiment.recurrence)
+    	if ( !experiment.lpq && experiment.recurrence)
     	{
     	    request.options["recurrence"] = 'simple';
     	    anumber = Number(experiment.period);
@@ -600,7 +621,7 @@ angular.module("monroe")
     	//request.deployment_options["restart"] = 1;
 
 		// SSH options.
-		if ($scope.experiment.requiresSSH) {
+		if (!experiment.lpq && $scope.experiment.requiresSSH) {
 			request.options["ssh"] = {};
 			request.options.ssh["server"] = sshServerURL;
 			request.options.ssh["server.port"] = 29999;
@@ -661,6 +682,7 @@ angular.module("monroe")
 				if (data.name)	$scope.experiment.name = data.name;
 				if (data.script)	$scope.experiment.script = data.script;
 				if (data.nodecount)	$scope.experiment.nodeCount = data.nodecount;
+				$scope.experiment.lpq = false;
 				if (data.start)	{
 					$scope.experiment.startDate = new Date( (new Date(data.start * 1000)).toUTCString() );
 					$scope.UpdateConfirmStartDate($scope.experiment);
@@ -747,6 +769,7 @@ angular.module("monroe")
 			experiment.showTemplateReadme = true;
       experiment.activeQuota = 100;
 
+
 		}
 		else if (experiment.template == "nettest") {
 			experiment.script = "docker.monroe-system.eu/monroe/monroe-nettest/image";
@@ -811,7 +834,7 @@ angular.module("monroe")
 	setTimeout($scope.refresh, 300000);
 
 	$scope.TimestampToString = function(timestamp) {
-		return (new Date((new Date(timestamp * 1000)).toUTCString())).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '');
+		return (new Date((new Date(timestamp * 1000)).toUTCString())).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '').replace(' (W. Europe Standard Time)', '').replace(' (W. Europe Daylight Time)', '');
 	}
 
 	// Get the user ID.
@@ -839,7 +862,6 @@ angular.module("monroe")
 					node.hasRecentHeartbeat = node.heartbeat + GOOD_HEARTBEAT_TIMEOUT_IN_SECONDS > $scope.currentTime;
 					node.canScheduleExperiments = (node.status=='active') && node.hasRecentHeartbeat && ((node.type == 'testing') || (node.type == 'deployed'));
 					node.countryVisz = node.project == 'norway' ? 'no' : node.project == 'nsb' ? 'no' : node.project == 'sweden' ? 'se' : node.project == 'vtab' ? 'se' : node.project == 'italy' ? 'it' : node.project == 'gtt' ? 'it' : node.project == 'wsys' ? 'it' : node.project == 'spain' ? 'es' : undefined;
-          node.cantScheduleExperiments = !node.canScheduleExperiments
 				}
 				$scope.FilterNodes();
 			})
@@ -895,9 +917,6 @@ angular.module("monroe")
 			node.isVisible = node.isVisible && (($scope.nodeModelFilter.length == 0) || ArrayIncludes($scope.nodeModelFilter, node.model));
       node.isShown = node.isVisible;
       node.isShown = node.isShown && ((node.heartbeat + GOOD_HEARTBEAT_TIMEOUT_IN_SECONDS > $scope.currentTime ) || ArrayIncludes( $scope.currentTime, node.hasRecentHeartbeat));
-      //node.isVisible = node.isVisible && ((node.heartbeat + GOOD_HEARTBEAT_TIMEOUT_IN_SECONDS > $scope.currentTime ) || ArrayIncludes( $scope.currentTime, node.hasRecentHeartbeat));
-
-
 			$scope.rangeResources.push(it); // Needed for ng-repeat.
 			if (node.isShown)
 				$scope.countShownNodes = $scope.countShownNodes + 1;
@@ -956,6 +975,8 @@ angular.module("monroe")
 			//return $scope.Bytes2FriendlyString(iface["quota_current"]) + " / " + $scope.Bytes2FriendlyString(iface["quota_reset_value"]);
 			return $scope.Bytes2FriendlyString(iface["quota_current"]) + " / " + $scope.Bytes2FriendlyString(interfaceQuota);
 	}
+
+  //Show eth and wlan in the user interface without breaking the logic.
 
   $scope.InterfaceOp = function(iface) {
 
@@ -1063,7 +1084,7 @@ angular.module("monroe")
 		ctx.rotate(-Math.PI/2);
 		for (var xx = $scope.schedulesStartTime; xx < $scope.schedulesEndTime; xx += $scope.schedulesStepTime * 6) {
 			var xxpx = Time2Coords(xx, xx + 1)[0] + $scope.canvasSchedLeftMargin + 8;
-			var theDate = (new Date( (new Date(xx*1000)).toUTCString() )).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '');
+			var theDate = (new Date( (new Date(xx*1000)).toUTCString() )).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '').replace(' (W. Europe Standard Time)', '').replace(' (W. Europe Daylight Time)', '');
 			ctx.fillText(theDate, $scope.canvasHeight/2 - $scope.canvasSchedTopMargin, -$scope.canvasWidth/2 + xxpx);
 			ctx.stroke();
 		}
@@ -1145,7 +1166,7 @@ angular.module("monroe")
 	}
 
 	$scope.MakeTooltip = function(occupation, time) {
-		var theDate = (new Date( (new Date(time*1000)).toUTCString() )).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '');
+		var theDate = (new Date( (new Date(time*1000)).toUTCString() )).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '').replace(' (W. Europe Standard Time)', '').replace(' (W. Europe Daylight Time)', '');
 		return theDate + (occupation == "busy" ? " - Busy" : occupation == "free" ? " - Free" : " - Unknown");
 	}
 });
@@ -1190,7 +1211,7 @@ angular.module("monroe")
 	$scope.GetUserID($scope);
 
 	$scope.TimestampToString = function(timestamp) {
-		return (new Date((new Date(timestamp * 1000)).toUTCString())).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '');
+		return (new Date((new Date(timestamp * 1000)).toUTCString())).toString().replace(' (Romance Daylight Time)', '').replace(' (Romance Standard Time)', '').replace(' (Central Europe Daylight Time)', '').replace(' (W. Europe Standard Time)', '').replace(' (W. Europe Daylight Time)', '');
 	}
 
 	// Show all the journal entries of this user.
