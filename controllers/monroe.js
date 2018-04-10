@@ -827,7 +827,7 @@ angular.module("monroe")
 	$scope.canvasSchedLeftMargin = 20;
 	$scope.canvasSchedTopMargin = 190;
 	$scope.canvasWidth = 1700;
-	$scope.canvasHeight = 20 + 250 * 10 + $scope.canvasSchedTopMargin;
+	$scope.canvasHeight = 20 + 256* 10 + $scope.canvasSchedTopMargin;
 
 	$scope.refresh = function() {
 		$scope.listNodes();
