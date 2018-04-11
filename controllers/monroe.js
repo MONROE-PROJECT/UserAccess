@@ -585,7 +585,7 @@ angular.module("monroe")
 		}
 		else { // LPQ scheduling. Define until/duration instead of start/stop. We reuse UI fields.
 			request.start = -1;
-			anumber = Number(experiment.startDate) / 1000|0;
+			anumber = Number(experiment.stopDate) / 1000|0;
 			if (isFinite(anumber))		request.options["until"] = anumber;
 			anumber = Number(experiment.duration);
 			if (isFinite(anumber))		request.duration = anumber;
@@ -756,6 +756,10 @@ angular.module("monroe")
 		if ($scope.experiment.rescheduleID >= 0)
 			$scope.retrieveExperiment($scope.experiment.rescheduleID);
 
+
+
+
+
 		ResetWarningPanels();
 	}
 	Init();
@@ -764,7 +768,7 @@ angular.module("monroe")
 		if (experiment.template == "Browsertime") {
 			experiment.script = "docker.monroe-system.eu/monroe/monroe-web/image";
 			experiment.name = "Browsertime (Access the Web Performance Timeline, from your browser, in your terminal!)";
-			experiment.additionalOptions = '"urls":["facebook.com/telia/","www.wikipedia.org","www.linkedin.com/company/teliacompany","www.reddit.com","www.instagram.com/leomessi/","www.google.com/#q=stockholm,+sweden","www.ebay.com","www.twitter.com","www.theguardian.com/international","www.youtube.com/watch?v=544vEgMiMG0/","www.tmall.com","www.stackoverflow.com","www.live.com","microsoft.com","www.kayak.com","www.yelp.com","www.etsy.com","www.flickr.com","www.coursera.com", "www.imgur.com"],"http_protocols":["h1s","h2"],"browsers":["firefox","chrome"]';
+			experiment.additionalOptions = '"urls":["www.facebook.com/telia/","www.wikipedia.org","www.linkedin.com/company/teliacompany","www.reddit.com","www.instagram.com/leomessi/","www.google.com/#q=stockholm,+sweden","www.ebay.com","www.twitter.com","www.theguardian.com/international","www.youtube.com/watch?v=544vEgMiMG0/","www.tmall.com","www.stackoverflow.com","www.live.com","www.microsoft.com","www.kayak.com","www.yelp.com","www.etsy.com","www.flickr.com","www.coursera.com", "www.imgur.com"],"http_protocols":["h1s","h2"],"browsers":["firefox","chrome"]';
 			experiment.templateReadmeURL = "https://github.com/MONROE-PROJECT/Experiments/blob/master/experiments/monroe-browsertime/README.md";
 			experiment.showTemplateReadme = true;
       experiment.activeQuota = 100;
