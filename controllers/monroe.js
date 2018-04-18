@@ -1072,10 +1072,11 @@ angular.module("monroe")
 		for (var xx = $scope.schedulesStartTime; xx <= $scope.schedulesEndTime; xx += $scope.schedulesStepTime) {
 			var xxpx = Time2Coords(xx, xx+1)[0] + $scope.canvasSchedLeftMargin;
 			ctx.lineWidth = 1;
-			ctx.strokeStyle = "#808080";
+			ctx.strokeStyle = "#a0a0a0";
 			ctx.beginPath();
 			var y1 = 5 + $scope.canvasSchedTopMargin;
-			var y2 = 10 + shownNodes * 10 + $scope.canvasSchedTopMargin;
+			//var y2 = 10 + shownNodes * 10 + $scope.canvasSchedTopMargin;
+			var y2 = $scope.canvasHeight - 20;
 			ctx.moveTo(xxpx, y1);
 			ctx.lineTo(xxpx, y2);
 			ctx.stroke();
