@@ -127,6 +127,7 @@ angular.module("monroe")
 					var exp = $scope.data.experiments[it];
 					exp.state = $scope.GetExperimentState(exp);
 					exp.hideDetails = true;
+          exp.until = exp.options.until || exp.stop;
 					exp.executions = {};
 					$scope.CountExperimentSchedules(exp, exp.executions);
 				}

@@ -110,7 +110,7 @@
                 <td>{{iExperiment.name}}</td>
 				<td class="text-right">{{iExperiment.executions.total}}</td>
                 <td>{{TimestampToString(iExperiment.start)}}</td>
-                <td>{{TimestampToString(iExperiment.stop)}}</td>
+                <td>{{TimestampToString(iExperiment.until)}}</td>
                 <td>{{HasUnfinishedTasks(iExperiment) ? "Yes" : "No"}}</td>
 				<td>{{HasUnfinishedTasks(iExperiment) ? "--" : iExperiment.state == EXPERIMENT_STATES.FINISHED_OK ? "Yes" : "No"}}</td>
 				<td ng-if="iExperiment.state == EXPERIMENT_STATES.ALL_DEFINED"><span class="glyphicon glyphicon-trash" style="color:crimson"></span> <button type="submit" class="btn btn-default btn-xs" ng-click="DeleteExperiment(iExperiment, $event)">Delete</button></td>
