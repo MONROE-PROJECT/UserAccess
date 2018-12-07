@@ -954,25 +954,29 @@ angular.module("monroe")
 
 	$scope.CalcRemainingQuota = function(iface) {
 		var Quotas = {
-			"24202": 50*(1024*1024*1024),	// Telia Norge (NO)
-			"24201": 50*(1024*1024*1024),	// Telenor (NO)
-			//"24001": *(1024*1024*1024),	// Telia Mobile (NO)
-			"24214": Infinity,				// ICE Nordisk (NO)
+			//"24202": 50*(1024*1024*1024),	// Telia Norge (NO)
+      "Telia Norge": 50*(1024*1024*1024),
+			//"24201": 50*(1024*1024*1024),	// Telenor (NO)
+      "Telenor": 50*(1024*1024*1024),	// Telenor (NO)
+      //"24001": *(1024*1024*1024),	// Telia Mobile (NO)
+			"ICE Nordisk Mobiltelefon AS": Infinity,				// ICE Nordisk (NO)
 
-			"22201": 20*(1024*1024*1024),	// TIM (IT)
-			"22210": 30*(1024*1024*1024),	// Vodafone (IT)
-			"22288": 25*(1024*1024*1024),	// WIND (Blu)
+			//"22201": 20*(1024*1024*1024),	// TIM (IT)
+      "TIM": 20*(1024*1024*1024),	// TIM (IT)
+      //"22210": 30*(1024*1024*1024),	// Vodafone (IT)
+      "Vodafone": 30*(1024*1024*1024),	// Vodafone (IT)
+      "WIND (Blu) -": 25*(1024*1024*1024),	// 22288 WIND (Blu)
 
-			"24002": 100*(1024*1024*1024),	// H3G Access AB / Tre / Three / 3 (SE)
-			"24008": 100*(1024*1024*1024),	// Telenor (Vodafone) (SE)
-			"24001": 200*(1024*1024*1024),	// Telia Mobile (SE)
+			"H3G Access AB": 100*(1024*1024*1024),	// 24002 H3G Access AB / Tre / Three / 3 (SE)
+			"Telenor (Vodafone)": 100*(1024*1024*1024),	// 24008 Telenor (Vodafone) (SE)
+			"Telia Mobile": 200*(1024*1024*1024),	// 24001 Telia Mobile (SE)
 
-			"21404": 20*(1024*1024*1024),	// Yoigo (ES)
-			"21403": 10*(1024*1024*1024),	// Orange (ES)
-			"21404": 23*(1024*1024*1024)	// Pepephone (ES)
+			"Yoigo": 20*(1024*1024*1024),	// 24104 Yoigo (ES)
+			"Orange": 10*(1024*1024*1024),	// 24103 Orange (ES)
+			"Pepehome": 23*(1024*1024*1024)	// Pepephone (ES)
 			};
 
-		var interfaceQuota = Quotas[iface["mccmnc"]];
+		var interfaceQuota = Quotas[iface["operator"]];
 		if (interfaceQuota == undefined)
 			return "";
 		else if (interfaceQuota == Infinity)
