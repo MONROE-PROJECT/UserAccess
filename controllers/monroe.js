@@ -969,7 +969,7 @@ angular.module("monroe")
 
 			"21404": 20*(1024*1024*1024),	// Yoigo (ES)
 			"21403": 10*(1024*1024*1024),	// Orange (ES)
-			"22210": 30*(1024*1024*1024)	// Vodafone (ES)
+			"21404": 23*(1024*1024*1024)	// Pepephone (ES)
 			};
 
 		var interfaceQuota = Quotas[iface["mccmnc"]];
@@ -1219,7 +1219,7 @@ angular.module("monroe")
 	$scope.GetUserID($scope);
 
 	$scope.TimestampToString = function(timestamp) {
-		return (new Date((new Date(timestamp * 1000)).toUTCString())).toString().split(" (")[0]; 
+		return (new Date((new Date(timestamp * 1000)).toUTCString())).toString().split(" (")[0];
 	}
 
 	// Show all the journal entries of this user.
