@@ -248,9 +248,12 @@ angular.module("monroe")
 
 	// Loads the new experiment page and signals to reload the schedule parameters.
 	$scope.RescheduleExperiment = function(experiment, event) {
-		window.location.replace(rescheduleExperimentURL + experiment.id);
-		event.stopPropagation(); // Stop the event before reaching the list controller that would try to show a non-existent experiment.
+		//window.location.replace(rescheduleExperimentURL + experiment.id);
+    window.open(rescheduleExperimentURL + experiment.id)
+    event.stopPropagation(); // Stop the event before reaching the list controller that would try to show a non-existent experiment.
 	}
+
+
 
 	$scope.AvoidHiding = function(event) {
 		event.stopPropagation();
