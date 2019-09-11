@@ -3,12 +3,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 angular.module("monroe")
-    .constant("myExperimentsURLa", "https://scheduler.monroe-system.eu/v1/users/")
+    .constant("myExperimentsURLa", "https://haugerud.nntb.no/v1/users/")
 	.constant("myExperimentsURLb", "/experiments")
-    .constant("newExperimentURL", "https://scheduler.monroe-system.eu/v1/experiments")
-	.constant("AuthURL", "https://scheduler.monroe-system.eu/v1/backend/auth")
-	.constant("DeleteExperimentURL", "https://scheduler.monroe-system.eu/v1/experiments/")
-	.constant("ExperimentSchedulesURLa", "https://scheduler.monroe-system.eu/v1/experiments/")
+    .constant("newExperimentURL", "https://haugerud.nntb.no/v1/experiments")
+	.constant("AuthURL", "https://haugerud.nntb.no/v1/backend/auth")
+	.constant("DeleteExperimentURL", "https://haugerud.nntb.no/v1/experiments/")
+	.constant("ExperimentSchedulesURLa", "https://haugerud.nntb.no/v1/experiments/")
 	.constant("ExperimentSchedulesURLb", "/schedules")
 	.constant("rescheduleExperimentURL", "NewExperiment.html#/?retrieveID=")
     .controller("statusExperimentCtrl", function($scope, $http, $location,
@@ -266,7 +266,7 @@ angular.module("monroe")
 ///////////////////////////////////////////////////////////////////////////////
 
 angular.module("monroe")
-    .constant("AuthURL", "https://scheduler.monroe-system.eu/v1/backend/auth")
+    .constant("AuthURL", "https://haugerud.nntb.no/v1/backend/auth")
     .controller("indexCtrl", function ($http, AuthURL) {
         $http.get(AuthURL, {withCredentials: true})
             .success(function (data) {
@@ -290,12 +290,12 @@ angular.module("monroe")
 ///////////////////////////////////////////////////////////////////////////////
 
 angular.module("monroe")
-    .constant("newExperimentURL", "https://scheduler.monroe-system.eu/v1/experiments")
-    .constant("checkScheduleURL", "https://scheduler.monroe-system.eu/v1/schedules/find")
+    .constant("newExperimentURL", "https://haugerud.nntb.no/v1/experiments")
+    .constant("checkScheduleURL", "https://haugerud.nntb.no/v1/schedules/find")
 	.constant("sshServerURL", "tunnel.monroe-system.eu")
-	.constant("ExperimentDetailsURLa", "https://scheduler.monroe-system.eu/v1/experiments/")
+	.constant("ExperimentDetailsURLa", "https://haugerud.nntb.no/v1/experiments/")
 	.constant("ExperimentDetailsURLb", "/schedules")
-	.constant("ScheduleDetailsURL", "https://scheduler.monroe-system.eu/v1/schedules/")
+	.constant("ScheduleDetailsURL", "https://haugerud.nntb.no/v1/schedules/")
 	.constant("PROPOSED_SCHEDULE_BUFFER_TIME", 60000)
     .controller("newExperimentCtrl", function($scope, $http, $location,
 										newExperimentURL, checkScheduleURL, sshServerURL,
@@ -814,9 +814,9 @@ angular.module("monroe")
 // Todo: Check if we can save the call to listSchedules and run it only after listNodes.
 
 angular.module("monroe")
-	.constant("AuthURL", "https://scheduler.monroe-system.eu/v1/backend/auth")
-	.constant("ResourcesURL", "https://scheduler.monroe-system.eu/v1/resources/")
-	.constant("SchedulePlanURL", "https://scheduler.monroe-system.eu/v1/schedules/")
+	.constant("AuthURL", "https://haugerud.nntb.no/v1/backend/auth")
+	.constant("ResourcesURL", "https://haugerud.nntb.no/v1/resources/")
+	.constant("SchedulePlanURL", "https://haugerud.nntb.no/v1/schedules/")
 	.constant("GOOD_HEARTBEAT_TIMEOUT_IN_SECONDS", 300)
     .controller("resourcesCtrl", function($scope, $http, $location,
 									ResourcesURL, AuthURL, SchedulePlanURL, GOOD_HEARTBEAT_TIMEOUT_IN_SECONDS) {
@@ -1192,8 +1192,8 @@ angular.module("monroe")
 ///////////////////////////////////////////////////////////////////////////////
 
 angular.module("monroe")
-	.constant("AuthURL", "https://scheduler.monroe-system.eu/v1/backend/auth")
-    .constant("JournalsURLa", "https://scheduler.monroe-system.eu/v1/users/")
+	.constant("AuthURL", "https://haugerud.nntb.no/v1/backend/auth")
+    .constant("JournalsURLa", "https://haugerud.nntb.no/v1/users/")
 	.constant("JournalsURLb", "/journals")
     .controller("accountInfoCtrl", function($scope, $http, $location, AuthURL,
 				JournalsURLa, JournalsURLb) {
