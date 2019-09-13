@@ -141,26 +141,19 @@
 					</div>
 					<div class="panel-body">
 						<div class="row" id="colSep">
-							<label class="control-label col-md-5" style="text-align:left">Countries (select to restrict):</label>
+							<label class="control-label col-md-5" style="text-align:left">Sites (select to restrict):</label>
 							<label class="control-label col-md-3" style="text-align:left">Node type:</label>
 						</div>
 						<div class="row">
 							<div class="col-md-5">
 								<select multiple size=8 class="form-control" ng-model="experiment.projectFilter" ng-change="CheckProjectFilter(experiment);" ng-disabled="experiment.disableNodeFilters">
-									<option value="norway">Norway</option>
-									<option value="nsb">Norway-NSB (trains)</option>
-									<option value="sweden">Sweden</option>
-									<option value="vtab">Sweden-VTAB (buses)</option>
-									<option value="italy">Italy</option>
-									<option value="gtt">Italy-GTT (buses)</option>
-									<option value="wsys">Italy-WSYS (trucks)</option>
-									<option value="spain">Spain</option>
+									<option value="nornet">Nornet</option>
+									<option value="verdensrommet">Verdensrommet</option>
 								</select>
 							</div>
 							<div class="col-md-3">
 								<select class="form-control col-md-2" ng-model="experiment.nodeType" ng-disabled="experiment.disableNodeFilters">
 									<option value="type:deployed" selected>Deployed</option>
-									<!--<option value="mobile">Mobile</option>-->
 									<option value="type:testing">Testing</option>
 								</select>
 							</div>
