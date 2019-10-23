@@ -488,7 +488,7 @@ angular.module("monroe")
 
     	if (!experiment.lpq && experiment.recurrence) {
     		anumber = Number(experiment.period);
-    		res = res && isFinite(anumber) && (anumber >= 600);
+    		res = res && isFinite(anumber) && (anumber >= 3600);
     		if (!res)
     		    $scope.showWarningMinimumRecurrencePeriod = true;
 
